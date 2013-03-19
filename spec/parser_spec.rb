@@ -26,5 +26,22 @@ describe Todoable::Parser do
       parser = Todoable::Parser.new("Valid todo string")
       parser.description.should == "Valid todo string"
     end
+
+    it "only provides the description if todo string contains a location" do
+      parser = Todoable::Parser.new("Valid todo string @location")
+      parser.description.should == "Valid todo string"
+    end
+  end
+
+  describe "#location" do
+    it "is nil when no location is given" do
+      parser = Todoable::Parser.new("Valid todo string")
+      parser.location.should be_nil
+    end
+
+    it "provides the location if one is given" do
+      parser = Todoable::Parser.new("Valid todo string @location")
+      parser.location.should == 'location'
+    end
   end
 end

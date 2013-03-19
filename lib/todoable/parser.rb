@@ -5,6 +5,14 @@ class Todoable::Parser
   end
 
   def description
-    @todo_string
+    result = @todo_string.match(/^(.*)@.*$/)
+    return @todo_string unless result
+    result[1].strip
+  end
+
+  def location
+    result = @todo_string.match(/^.*@(.*)$/)
+    return nil unless result
+    result[1]
   end
 end
