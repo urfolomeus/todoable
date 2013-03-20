@@ -37,18 +37,23 @@ describe Todoable::Parser do
       parser.description.should == "Valid todo string"
     end
 
+    it "only provides the description if todo string contains a repeater" do
+      parser = Todoable::Parser.new("Valid todo string *weekly")
+      parser.description.should == "Valid todo string"
+    end
+
     it "only provides the description if todo string contains tags" do
       parser = Todoable::Parser.new("Valid todo string #stuff, things")
       parser.description.should == "Valid todo string"
     end
 
-    it "only provides the description if todo string contains a priority, a location and tags" do
-      parser = Todoable::Parser.new("Valid todo string !high @work #stuff, things")
+    it "only provides the description if todo string contains a priority, a location, a repeater and tags" do
+      parser = Todoable::Parser.new("Valid todo string !high @work *weekly #stuff, things")
       parser.description.should == "Valid todo string"
     end
 
-    it "only provides the description if todo string contains tags, a priority and a location" do
-      parser = Todoable::Parser.new("Valid todo string #stuff, things !high @work")
+    it "only provides the description if todo string contains a repeater, tags, a priority and a location" do
+      parser = Todoable::Parser.new("Valid todo string *weekly #stuff, things !high @work")
       parser.description.should == "Valid todo string"
     end
   end
@@ -104,6 +109,33 @@ describe Todoable::Parser do
     it "doesn't include any other special chars after it" do
       parser = Todoable::Parser.new("Valid todo string !high #stuff @work")
       parser.priority.should == 'high'
+    end
+  end
+
+  describe "#repeats" do
+    it "is nil when no repeat is given" do
+      parser = Todoable::Parser.new("Valid todo string")
+      parser.repeats.should be_nil
+    end
+
+    it "provides the repeat if one is given" do
+      parser = Todoable::Parser.new("Valid todo string *weekly")
+      parser.repeats.should == 'weekly'
+    end
+
+    it "doesn't include any other special chars before it" do
+      parser = Todoable::Parser.new("Valid todo string @work #stuff *weekly")
+      parser.repeats.should == 'weekly'
+    end
+
+    it "doesn't include any other special chars around it" do
+      parser = Todoable::Parser.new("Valid todo string @work *weekly #stuff")
+      parser.repeats.should == 'weekly'
+    end
+
+    it "doesn't include any other special chars after it" do
+      parser = Todoable::Parser.new("Valid todo string *weekly #stuff @work")
+      parser.repeats.should == 'weekly'
     end
   end
 
