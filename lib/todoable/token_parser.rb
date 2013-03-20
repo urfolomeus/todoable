@@ -1,4 +1,4 @@
-class Todoable::Parser
+class Todoable::TokenParser
   SPECIAL_CHARS = "@#!\*"
 
   def initialize(todo_string)

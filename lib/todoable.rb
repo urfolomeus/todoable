@@ -1,3 +1,3 @@
 module Todoable; end
 
-require 'todoable/parser'
+require 'todoable/token_parser'
