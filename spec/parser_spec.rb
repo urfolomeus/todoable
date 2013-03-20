@@ -70,25 +70,31 @@ describe Todoable::Parser do
     end
   end
 
-  describe "#list" do
+  describe "#tags" do
     it "is nil when no location is given" do
       parser = Todoable::Parser.new("Valid todo string")
-      parser.list.should be_nil
+      parser.tags.should be_nil
     end
 
     it "provides the location if one is given" do
       parser = Todoable::Parser.new("Valid todo string #stuff")
-      parser.list.should == 'stuff'
+      parser.tags.should == ['stuff']
+    end
+
+    it "separates tags by commas" do
+      parser = Todoable::Parser.new("Valid todo string #stuff, things")
+      parser.tags.should == ['stuff', 'things']
     end
 
     it "doesn't include any other special chars before it" do
       parser = Todoable::Parser.new("Valid todo string @work #stuff")
-      parser.list.should == 'stuff'
+      parser.tags.should == ['stuff']
     end
 
     it "doesn't include any other special chars after it" do
       parser = Todoable::Parser.new("Valid todo string #stuff @work")
-      parser.list.should == 'stuff'
+      parser.tags.should == ['stuff']
     end
   end
 end
+

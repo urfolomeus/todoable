@@ -14,15 +14,17 @@ class Todoable::Parser
     parse_special_char '@'
   end
 
-  def list
-    parse_special_char '#'
+  def tags
+    parsed_string = parse_special_char('#')
+    return nil unless parsed_string
+    parsed_string.split(',').map(&:strip)
   end
 
   private
 
   def parse_special_char(char)
-    result = @todo_string.match(/#{char}([^#{SPECIAL_CHARS}]*)/)
-    return nil unless result
-    result[1].strip
+    matches = @todo_string.match(/#{char}([^#{SPECIAL_CHARS}]*)/)
+    return nil unless matches
+    matches[1].strip
   end
 end
