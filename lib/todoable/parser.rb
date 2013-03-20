@@ -1,5 +1,5 @@
 class Todoable::Parser
-  SPECIAL_CHARS = "@#"
+  SPECIAL_CHARS = "@#!"
 
   def initialize(todo_string)
     raise ArgumentError, "this is a string parser but you gave: #{todo_string.class}" unless todo_string.is_a?(String)
@@ -12,6 +12,10 @@ class Todoable::Parser
 
   def location
     parse_special_char '@'
+  end
+
+  def priority
+    parse_special_char '!'
   end
 
   def tags
