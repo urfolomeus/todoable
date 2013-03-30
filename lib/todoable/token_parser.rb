@@ -1,5 +1,5 @@
 class Todoable::TokenParser
-  SPECIAL_CHARS = "@#!\*"
+  TOKENS = "@#!\*"
 
   def initialize(todo_string)
     raise ArgumentError, "this is a string parser but you gave: #{todo_string.class}" unless todo_string.is_a?(String)
@@ -7,31 +7,31 @@ class Todoable::TokenParser
   end
 
   def description
-    @todo_string[/[^#{SPECIAL_CHARS}]*/].strip
+    @todo_string[/[^#{TOKENS}]*/].strip
   end
 
   def location
-    parse_special_char '@'
+    parse_token '@'
   end
 
   def priority
-    parse_special_char '!'
+    parse_token '!'
   end
 
   def repeats
-    parse_special_char '\*'
+    parse_token '\*'
   end
 
   def tags
-    parsed_string = parse_special_char('#')
+    parsed_string = parse_token('#')
     return nil unless parsed_string
     parsed_string.split(',').map(&:strip)
   end
 
   private
 
-  def parse_special_char(char)
-    matches = @todo_string.match(/#{char}([^#{SPECIAL_CHARS}]*)/)
+  def parse_token(char)
+    matches = @todo_string.match(/#{char}([^#{TOKENS}]*)/)
     return nil unless matches
     matches[1].strip
   end
