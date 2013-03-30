@@ -8,7 +8,7 @@ end
 watch( 'spec/[^#].*_spec\.rb' )  {|md| run_spec md[0] }
 
 def run_spec( file_path )
-  run_command("rspec -c #{file_path}")
+  run_command("rspec -c -f documentation #{file_path}")
 end
 
 def run_command(command)
