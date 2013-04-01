@@ -1,6 +1,8 @@
-require 'todoable'
+require 'spec_helper'
 
 describe Todoable::TokenParser do
+  Given(:description)     { "Valid todo string" }
+
   describe "initializing" do
     it "throws an argument error if no arg given" do
       expect {
@@ -22,66 +24,74 @@ describe Todoable::TokenParser do
   end
 
   describe "#description" do
-    it "provides the todo string text if todo string contains no tokens" do
-      parser = Todoable::TokenParser.new("Valid todo string")
-      parser.description.should == "Valid todo string"
+    Given(:tokens)          { "" }
+    Given(:string_to_parse) { description + tokens }
+    Given(:parser)          { Todoable::TokenParser.new(string_to_parse) }
+
+    context "when todo string contains no tokens" do
+      Then { parser.description == description }
     end
 
-    it "only provides the description if todo string contains a location token" do
-      parser = Todoable::TokenParser.new("Valid todo string @work")
-      parser.description.should == "Valid todo string"
+    context "when string contains a location token" do
+      Given(:tokens) { " @work" }
+      Then { parser.description == description }
     end
 
-    it "only provides the description if todo string contains a priority token" do
-      parser = Todoable::TokenParser.new("Valid todo string !high")
-      parser.description.should == "Valid todo string"
+    context "when string contains a priority token" do
+      Given(:tokens) { " !high" }
+      Then { parser.description == description }
     end
 
-    it "only provides the description if todo string contains a repeater token" do
-      parser = Todoable::TokenParser.new("Valid todo string *weekly")
-      parser.description.should == "Valid todo string"
+    context "when string contains a repeater token" do
+      Given(:tokens) { " *weekly" }
+      Then { parser.description == description }
     end
 
-    it "only provides the description if todo string contains tags" do
-      parser = Todoable::TokenParser.new("Valid todo string #stuff, things")
-      parser.description.should == "Valid todo string"
+    context "when string contains tags" do
+      Given(:tokens) { " #stuff, things" }
+      Then { parser.description == description }
     end
 
-    it "only provides the description if todo string contains a priority, a location, a repeater and tags" do
-      parser = Todoable::TokenParser.new("Valid todo string !high @work *weekly #stuff, things")
-      parser.description.should == "Valid todo string"
+    context "when string contains a priority, a location, a repeater and tags" do
+      Given(:tokens) { " !high @work *weekly #stuff, things" }
+      Then { parser.description == description }
     end
 
-    it "only provides the description if todo string contains a repeater, tags, a priority and a location" do
-      parser = Todoable::TokenParser.new("Valid todo string *weekly #stuff, things !high @work")
-      parser.description.should == "Valid todo string"
+    context "when string contains a repeater, tags, a priority and a location" do
+      Given(:tokens) { " *weekly #stuff, things !high @work" }
+      Then { parser.description == description }
     end
   end
 
   describe "#location" do
-    it "is nil when no location is given" do
-      parser = Todoable::TokenParser.new("Valid todo string")
-      parser.location.should be_nil
+    Given(:tokens)          { "" }
+    Given(:string_to_parse) { description + tokens }
+    Given(:parser)          { Todoable::TokenParser.new(string_to_parse) }
+
+    context "is nil when no location is given" do
+      Then { parser.location == nil }
     end
 
-    it "provides the location if one is given" do
-      parser = Todoable::TokenParser.new("Valid todo string @work")
-      parser.location.should == 'work'
-    end
+    context "when location is given" do
+      context "provides the location" do
+        Given(:tokens) { " @work" }
+        Then { parser.location.should == 'work' }
+      end
 
-    it "doesn't include any other tokens before it" do
-      parser = Todoable::TokenParser.new("Valid todo string #stuff !high @work")
-      parser.location.should == 'work'
-    end
+      context "doesn't include any other tokens before it" do
+        Given(:tokens) { " #stuff !high @work" }
+        Then { parser.location.should == 'work' }
+      end
 
-    it "doesn't include any other tokens around it" do
-      parser = Todoable::TokenParser.new("Valid todo string !high @work #stuff")
-      parser.location.should == 'work'
-    end
+      context "doesn't include any other tokens around it" do
+        Given(:tokens) { " !high @work #stuff" }
+        Then { parser.location.should == 'work' }
+      end
 
-    it "doesn't include any other tokens after it" do
-      parser = Todoable::TokenParser.new("Valid todo string @work #stuff !high")
-      parser.location.should == 'work'
+      context "doesn't include any other tokens after it" do
+        Given(:tokens) { " @work #stuff !high" }
+        Then { parser.location.should == 'work' }
+      end
     end
   end
 
